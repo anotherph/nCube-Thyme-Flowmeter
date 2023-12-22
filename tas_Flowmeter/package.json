@@ -1,0 +1,16 @@
+{
+    "name": "tas_flowmeter",
+    "version": "1.0.0",
+    "main": "tas_Flowmeter.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "mqtt": "^4.3.7",
+        "nanoid": "^3.2.0",
+        "serialport": "^10.5.0"
+    },
+    "author": "Wonseok Jung, Autonomous IoT Research Center, KETI",
+    "license": "ISC",
+    "description": ""
+}

@@ -11,7 +11,8 @@ const {SerialPort} = require('serialport');
 /* USER CODE */
 // for sensor
 let flowmeterPort = null;
-let flowmeterPortNum = 'COM1';
+// let flowmeterPortNum = 'COM1';
+let flowmeterPortNum = '/dev/ttyS0';
 let flowmeterBaudrate = '9600';
 
 let tas = {

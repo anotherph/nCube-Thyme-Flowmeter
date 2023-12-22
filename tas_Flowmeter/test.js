@@ -1106,7 +1106,8 @@ let t_data = [
     'Tim=000000h22—'
 ];
 let flowmeterPort = null;
-let flowmeterPortNum = 'COM1';
+// let flowmeterPortNum = 'COM1';
+let flowmeterPortNum = '/dev/ttyS0';
 let flowmeterBaudrate = '9600';
 
 flowmeterPortOpening();
@@ -1117,7 +1118,7 @@ function flowmeterPortOpening() {
             path: flowmeterPortNum,
             baudRate: parseInt(flowmeterBaudrate, 10),
         });
-        flowmeterPort.on('open', flowmeterPortOpen);
+        flowmeterPort.on('open', flowmeterPortOpen); // on handler 를 이용하여 event 등록
         flowmeterPort.on('close', flowmeterPortClose);
         flowmeterPort.on('error', flowmeterPortError);
     }
@@ -1128,7 +1129,7 @@ function flowmeterPortOpening() {
             setTimeout(flowmeterPortOpening, 2000);
         }
         else {
-            flowmeterPort.open();
+            flowmeterPort.open(); // 함수 flowmeterPortOpen 실행 
         }
     }
 }

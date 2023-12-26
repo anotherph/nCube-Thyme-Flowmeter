@@ -1107,7 +1107,7 @@ let t_data = [
 ];
 let flowmeterPort = null;
 // let flowmeterPortNum = 'COM1';
-let flowmeterPortNum = '/dev/ttyS0';
+let flowmeterPortNum = '/dev/pts/7';
 let flowmeterBaudrate = '9600';
 
 flowmeterPortOpening();

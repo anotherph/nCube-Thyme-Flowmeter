@@ -12,7 +12,7 @@ const {SerialPort} = require('serialport');
 // for sensor
 let flowmeterPort = null;
 // let flowmeterPortNum = 'COM1';
-let flowmeterPortNum = '/dev/ttyS0';
+let flowmeterPortNum = '/dev/pts/7';
 let flowmeterBaudrate = '9600';
 
 let tas = {
@@ -225,6 +225,7 @@ function flowmeterPortData(data) {
 
         console.log(con);
         doPublish(sendDataTopic['flowmeter'], JSON.stringify(con));
+        // 데이터를 여기에서 바로 dataHub 로 쏠 수 있도록 수정할 것
         con = {};
     }
 }

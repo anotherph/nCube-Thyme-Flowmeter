@@ -8,6 +8,8 @@ const mqtt = require('mqtt');
 const {nanoid} = require('nanoid');
 const {SerialPort} = require('serialport');
 
+dataHub = require('./datahub.js');
+
 /* USER CODE */
 // for sensor
 let flowmeterPort = null;
@@ -37,6 +39,13 @@ let tas = {
 let sendDataTopic = {
     flowmeter: '/thyme/flowmeter',
 };
+
+let sendVirDataTopic = {
+    flowmeter: '/virtual/generation',
+};
+
+var mqttServerUrl = "mqtt://127.0.0.1:1883";
+var client_vir = mqtt.connect(mqttServerUrl);
 
 // let recvDataTopic = {
 //     led: '/led/set',
@@ -97,6 +106,7 @@ let createConnection = () => {
     }
 };
 
+
 let doSubscribe = (topic) => {
     if (tas.client.connected) {
         const qos = 0;
@@ -110,6 +120,19 @@ let doSubscribe = (topic) => {
         });
     }
 };
+
+let doSubscribe_vir = (topic) => {
+    const qos = 0;
+    client_vir.subscribe(topic, {qos}, (error) => {
+        if (error) {
+            console.log('Subscribe to topics error', error)
+            return;
+        }
+
+        console.log('Subscribe to topics (', topic, ')');
+    });
+};
+
 
 let doUnSubscribe = (topic) => {
     if (tas.client.connected) {
@@ -153,7 +176,8 @@ let destroyConnection = () => {
 
 createConnection();
 
-flowmeterPortOpening();
+// flowmeterPortOpening(); // when you receive measured data comes from flowmeter
+flowmeter_MQTT(); // when you received pre-measured data published by test_mqtt.js
 
 function flowmeterPortOpening() {
     if (!flowmeterPort) {
@@ -195,6 +219,40 @@ function flowmeterPortError(error) {
 }
 
 let con = {};
+
+function flowmeter_MQTT() {
+    doSubscribe_vir(sendVirDataTopic.flowmeter);    
+    client_vir.on("message", function (topic, message) {
+        // console.log("Message:", message.toString());
+        let msg = message.toString();
+        let msg_arr = msg.split(' ');
+        console.log(msg_arr);
+    
+        if (msg_arr.length === 2 || msg.includes('\x02')) {
+            if (msg.includes('\x02')) {
+                con.cur_time = msg.replace('\x02', '');
+            }
+            else {
+                con.cur_time = msg;
+            }
+        }
+        else if (msg.includes('ID')) {
+            con.cur_time = con.cur_time + msg_arr[0];
+            con.m_flowrate = msg_arr[msg_arr.length - 1];
+        }
+        else if (msg.includes('To')) {
+            con.m_flowrate = con.m_flowrate + msg_arr[0];
+            con.m_speed = msg_arr[1];
+        }
+        else if (msg.includes('t=')) {
+            con.t_flowrate = msg.split('=')[1].replace(/ /g, ''); // remove all spaces from the string
+            console.log(con);
+            doPublish(sendDataTopic['flowmeter'], JSON.stringify(con)); 
+            // 데이터를 여기에서 바로 dataHub 로 쏠 수 있도록 수정할 것
+            con = {};
+        }
+        });
+}
 
 function flowmeterPortData(data) {
     // console.log('Recieved ' + data.toString() + ' From RS232');

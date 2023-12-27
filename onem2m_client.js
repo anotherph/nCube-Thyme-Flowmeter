@@ -384,14 +384,15 @@ function http_request(path, method, ty, bodyString, callback) {
         options.rejectUnauthorized = false;
 
         var http = require('https');
-    }
+    }   
+    
     else {
         http = require('http');
     }
 
     var res_body = '';
     var req = http.request(options, function (res) {
-        //console.log('[crtae response : ' + res.statusCode);
+        //console.log('[crtae response : ' + res.statusCode);       
 
         //res.setEncoding('utf8');
 

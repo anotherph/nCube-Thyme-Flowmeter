@@ -131,6 +131,10 @@ let doSubscribe = (topic) => {
             console.log('Subscribe to topics (', topic, ')');
         });
     }
+
+    conf.tas.client.on("message", function (topic, message) {
+        console.log( "Message:", message.toString());
+      });
 };
 
 let doUnSubscribe = (topic) => {

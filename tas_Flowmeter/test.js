@@ -1107,7 +1107,7 @@ let t_data = [
 ];
 let flowmeterPort = null;
 // let flowmeterPortNum = 'COM1';
-let flowmeterPortNum = '/dev/pts/7';
+let flowmeterPortNum = '/dev/pts/6';
 let flowmeterBaudrate = '9600';
 
 flowmeterPortOpening();
@@ -1154,6 +1154,7 @@ let count = 0;
 setInterval(()=>{
     if (count < t_data.length) {
         flowmeterPort.write(Buffer.from(t_data[count]));
+        // console.log('-----'+t_data[count])
         count++;
     }
     else {

@@ -1,0 +1,23 @@
+{
+   "datasetId": "flowrate01",
+   "entities": [
+      {
+         "@context": [
+            "https://raw.githubusercontent.com/ooosm/context/main/partial_poc1_context.jsonld",
+            "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+         ],
+         "id": "urn:climate:KETI:demo:FlowRate:sensor:test",
+         "type": "FlowRate",
+         "flowRate": {
+            "type": "Property",
+            "value": 0,
+            "observedAt": "2022-10-14T02:57:08Z"
+         },
+         "velocity": {
+            "type": "Property",
+            "value": 0,
+            "observedAt": "2022-10-14T02:57:08Z"
+         }
+      }
+   ]
+}

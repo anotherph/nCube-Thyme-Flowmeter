@@ -14,6 +14,8 @@
 
 // for TAS
 
+// 여기서 말하는 tas client 가 누구인거지..? local device 를 말하는 건가? 
+
 global.socket_arr = {};
 
 var tas_buffer = {};
@@ -35,6 +37,10 @@ let getDataTopic = {
 
 let setDataTopic = {
     // led: '/led/set',
+};
+
+let mobiusTopic = {
+    mobius: '/mobius/letMobiusKnow',
 };
 /* */
 
@@ -108,6 +114,8 @@ let createConnection = () => {
                 if (content) {
                     onem2m_client.create_cin(parent, 1, content, this, (status, res_body, to, socket) => {
                         console.log('x-m2m-rsc : ' + status + ' <----');
+                        doPublish(mobiusTopic.mobius,content) // make alarm to let us know the new cnt is posted
+                        console.log('publish topic of'+mobiusTopic.mobius)
                     });
                 }
             });
@@ -152,6 +160,7 @@ let doUnSubscribe = (topic) => {
 let doPublish = (topic, payload) => {
     if (conf.tas.client.connected) {
         conf.tas.client.publish(topic, payload, 0, error => {
+            console.log ('publish complete!!')
             if (error) {
                 console.log('Publish error', error)
             }

@@ -8,8 +8,6 @@ const mqtt = require('mqtt');
 const {nanoid} = require('nanoid');
 const {SerialPort} = require('serialport');
 
-dataHub = require('./datahub.js');
-
 /* USER CODE */
 // for sensor
 let flowmeterPort = null;
@@ -176,8 +174,8 @@ let destroyConnection = () => {
 
 createConnection();
 
-// flowmeterPortOpening(); // when you receive measured data comes from flowmeter
-flowmeter_MQTT(); // when you received pre-measured data published by test_mqtt.js
+// flowmeterPortOpening(); // when you receive measured data from serial port
+flowmeter_MQTT(); // when you receive pre-measured data published by test_mqtt.js
 
 function flowmeterPortOpening() {
     if (!flowmeterPort) {
@@ -283,7 +281,6 @@ function flowmeterPortData(data) {
 
         console.log(con);
         doPublish(sendDataTopic['flowmeter'], JSON.stringify(con));
-        // 데이터를 여기에서 바로 dataHub 로 쏠 수 있도록 수정할 것
         con = {};
     }
 }

@@ -76,7 +76,9 @@ sub_arr = [
         // parent: cnt_arr[3].parent + '/'  + cnt_arr[3].name,
         parent: cnt_arr[0].parent + '/'  + cnt_arr[0].name,
         name: 'sub1',
-        nu: 'mqtt://' + cse.host + ':' + cse.mqttport + '/' + ae.id + '?ct=json', // 'http:/' + ip.address() + ':' + ae.port + '/noti?ct=json',
+        // nu: 'mqtt://' + cse.host + ':' + cse.mqttport + '/' + ae.id + '?ct=json', // 'http:/' + ip.address() + ':' + ae.port + '/noti?ct=json',
+        nu: 'mqtt://' + cse.host + ':' + cse.mqttport + '/mobius/KETI_Flowmeter' + '?ct=json', // 'http:/' + ip.address() + ':' + ae.port + '/noti?ct=json',
+
     },
 ];
 

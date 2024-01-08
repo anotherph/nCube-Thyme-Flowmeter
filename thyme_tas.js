@@ -115,7 +115,7 @@ let createConnection = () => {
                 if (content) {
                     onem2m_client.create_cin(parent, 1, content, this, (status, res_body, to, socket) => {
                         console.log('x-m2m-rsc : ' + status + ' <----');
-                        doPublish(mobiusTopic.mobius,content) // make alarm to let us know the new cnt is posted
+                        // doPublish(mobiusTopic.mobius,content) // make alarm to let us know the new cnt is posted
                         // console.log('publish topic of'+mobiusTopic.mobius)
                     });
                 }

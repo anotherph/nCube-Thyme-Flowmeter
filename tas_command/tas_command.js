@@ -9,15 +9,15 @@ const mqtt = require('mqtt');
 const {nanoid} = require('nanoid');
 let Gpio = require('onoff').Gpio;
 
-let c_flowmeter = new Gpio(6, 'out');
-let c_pump = new Gpio(10, 'out');
+let c_flowmeter = new Gpio(6, 'out'); // 유량계
+let c_pump = new Gpio(10, 'out'); // 펌프
 
 function control_equip(command){
-    if (command = "ON"){
+    if (command = "on"){
         c_flowmeter.writeSync(1);
         c_pump.writeSync(1);
     }
-    else if(command = "OFF"){
+    else if(command = "off"){
         c_flowmeter.writeSync(0);
         c_pump.writeSync(0);
     }
@@ -144,7 +144,7 @@ let createConnection = () => {
                 let content = null;
 
                 /* USER CODES */
-                if(topic === recvDataTopic.led) {
+                if(topic === recvDataTopic.command) {
                     /*
                     // LED 제어
                     console.log("led light type : ", JSON.parse(message.toString()));

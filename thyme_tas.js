@@ -32,11 +32,12 @@ let getDataTopic = {
     // co2: '/thyme/co2',
     // tvoc: '/thyme/tvoc',
     // temp: '/thyme/temp',
-    flowmeter: '/thyme/flowmeter',
+    flowmeter: '/thyme/flowmeter', // 이 토픽으로 어떻게 sub1 인지 아는거지? 
 };
 
 let setDataTopic = {
     // led: '/led/set',
+    command: '/command'
 };
 
 // thyme 이 CIN 생성 시 알람을 보내는 경우 사용
@@ -92,6 +93,7 @@ let createConnection = () => {
                     parent = conf.cnt[0].parent + '/' + conf.cnt[0].name;
                     content = message.toString();
                 }
+
                 /*else if(topic === getDataTopic.tvoc) {
                  parent = conf.cnt[1].parent + '/' + conf.cnt[0].name;
                  let curTime =  moment().format();

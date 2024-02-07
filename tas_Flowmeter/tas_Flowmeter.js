@@ -246,7 +246,6 @@ function flowmeter_MQTT() {
             con.t_flowrate = msg.split('=')[1].replace(/ /g, ''); // remove all spaces from the string
             console.log(con);
             doPublish(sendDataTopic['flowmeter'], JSON.stringify(con)); 
-            // 데이터를 여기에서 바로 dataHub 로 쏠 수 있도록 수정할 것
             con = {};
         }
         });

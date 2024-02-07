@@ -20,7 +20,7 @@ var coap = require('coap');
 var WebSocketClient = require('websocket').client;
 
 var bodyParser = require('body-parser');
-var url = require('url');
+var {URL} = require('url');
 var util = require('util');
 
 var js2xmlparser = require("js2xmlparser");
@@ -43,6 +43,8 @@ var count_q = {};
 var onem2m_options = {};
 var _this = null;
 
+var noti_topic = [];
+
 function Onem2mClient(options) {
     onem2m_options = options;
 
@@ -62,7 +64,7 @@ Onem2mClient.prototype = new EventEmitter();
 
 var proto = Onem2mClient.prototype;
 
-var mqtt_init = function() {
+var mqtt_init = () => {
     global.req_topic = '/oneM2M/req/' + onem2m_options.aei + onem2m_options.cseid + '/' + onem2m_options.bodytype;
 
     var reg_resp_topic = '/oneM2M/reg_resp/' + onem2m_options.aei + '/+/#';
@@ -105,12 +107,13 @@ var mqtt_init = function() {
 
     mqtt_client = mqtt.connect(connectOptions);
 
-    mqtt_client.on('connect', function () {
-        mqtt_client.subscribe(reg_resp_topic);
-        mqtt_client.subscribe(resp_topic);
-
-        console.log('subscribe reg_resp_topic as ' + reg_resp_topic);
-        console.log('subscribe resp_topic as ' + resp_topic);
+    mqtt_client.on('connect', () => {
+        mqtt_client.subscribe(reg_resp_topic, () => {
+            console.log('subscribe reg_resp_topic as ' + reg_resp_topic);
+        });
+        mqtt_client.subscribe(resp_topic, () => {
+            console.log('subscribe resp_topic as ' + resp_topic);
+        });
     });
 
     mqtt_client.on('message', mqtt_message_handler);
@@ -384,15 +387,15 @@ function http_request(path, method, ty, bodyString, callback) {
         options.rejectUnauthorized = false;
 
         var http = require('https');
-    }   
-    
+    }
+
     else {
         http = require('http');
     }
 
     var res_body = '';
     var req = http.request(options, function (res) {
-        //console.log('[crtae response : ' + res.statusCode);       
+        //console.log('[crtae response : ' + res.statusCode);
 
         //res.setEncoding('utf8');
 
@@ -1414,9 +1417,9 @@ var crtsub = function(parent, rn, nu, count, callback) {
             console.log(bodyString);
         }
 
-        http_request(parent, 'post', '23', bodyString, function (res, res_body) {
+        http_request(parent, 'post', '23', bodyString, (res, res_body) => {
             console.log(count + ' - ' + parent + '/' + rn + ' - x-m2m-rsc : ' + res.headers['x-m2m-rsc'] + ' <----');
-            console.log(JSON.stringify(res_body));
+            console.log(res_body);
             callback(res.headers['x-m2m-rsc'], res_body, count);
         });
     }
@@ -1573,26 +1576,29 @@ var crtsub = function(parent, rn, nu, count, callback) {
         }
     }
 
-    if (url.parse(nu).protocol === 'http:') {
+    const url = new URL(nu);
+    if (url.protocol === 'http:') {
         if (!server) {
             server = http.createServer(app);
-            server.listen(url.parse(nu).port, function () {
+            server.listen(url.port, function () {
                 console.log('http_server running at ' + onem2m_options.aeport + ' port');
             });
         }
     }
-    else if (url.parse(nu).protocol === 'mqtt:') {
-        var noti_topic = util.format('/oneM2M/req/+/%s/#', onem2m_options.aei);
-        mqtt_connect(url.parse(nu).hostname, url.parse(nu).port, noti_topic);
+    else if (url.protocol === 'mqtt:') {
+        noti_topic.push(util.format('%s', url.pathname));
+        if (count === conf.sub.length - 1) {
+            mqtt_connect(url.hostname, url.port, noti_topic);
+        }
     }
-    else if(url.parse(nu).protocol === 'coap') {
+    else if(url.protocol === 'coap') {
         coap_server = coap.createServer();
         coap_server.listen(onem2m_options.aeport, function() {
             console.log('coap_server running at ' + onem2m_options.aeport +' port');
         });
         coap_server.on('request', coap_message_handler);
     }
-    else if(url.parse(nu).protocol === 'ws') {
+    else if(url.protocol === 'ws') {
         // to do
         // if(_server == null) {
         //     var http = require('http');
@@ -1949,8 +1955,6 @@ var crtci = function(parent, count, strContent, socket, callback) {
 };
 
 
-
-
 // for notification
 //var xmlParser = bodyParser.text({ type: '*/*' });
 
@@ -2075,9 +2079,10 @@ var mqtt_noti_action = function(topic_arr, jsonObj) {
                     response_mqtt(resp_topic, 2001, '', onem2m_options.aei, rqi, '', topic_arr[5]);
                 }
                 else {
-                    resp_topic = '/oneM2M/resp/' + topic_arr[3] + '/' + topic_arr[4] + '/' + topic_arr[5];
-                    response_mqtt(resp_topic, 2001, '', onem2m_options.aei, rqi, '', topic_arr[5]);
-
+                    if (topic_arr[0]==='oneM2M') {
+                        resp_topic = '/oneM2M/resp/' + topic_arr[3] + '/' + topic_arr[4] + '/' + topic_arr[5];
+                        response_mqtt(resp_topic, 2001, '', onem2m_options.aei, rqi, '', topic_arr[5]);
+                    }
                     console.log('mqtt ' + bodytype + ' notification <----');
 
                     _this.emit('notification', path_arr.join('/'), cinObj);
@@ -2159,8 +2164,13 @@ function mqtt_connect(serverip, port, noti_topic) {
         mqtt_sub_client = mqtt.connect(connectOptions);
 
         mqtt_sub_client.on('connect', function () {
-            mqtt_sub_client.subscribe(noti_topic);
-            console.log('[mqtt_connect] noti_topic : ' + noti_topic);
+            for (let idx = 0; idx < noti_topic.length; idx++) {
+                if (noti_topic.hasOwnProperty(idx)) {
+                    mqtt_sub_client.subscribe(noti_topic[idx], () => {
+                        console.log('[mqtt_connect] subscribe noti_topic [' + idx + ']: ' + noti_topic[idx]);
+                    });
+                }
+            }
         });
 
         mqtt_sub_client.on('message', function (topic, message) {
@@ -2205,8 +2215,17 @@ function mqtt_connect(serverip, port, noti_topic) {
                     mqtt_noti_action(topic_arr, jsonObj);
                 }
             }
+            else if (noti_topic.includes(topic)) {
+                jsonObj = JSON.parse(message.toString());
+
+                if (jsonObj['m2m:rqp'] == null) {
+                    jsonObj['m2m:rqp'] = jsonObj;
+                }
+
+                mqtt_noti_action(topic_arr, jsonObj);
+            }
             else {
-                console.log('topic is not supported');
+                console.log('topic( ' + topic + ' ) is not supported');
             }
         });
 

@@ -56,10 +56,10 @@ cnt_arr = [
         parent: '/' + cse.name + '/' + ae.name,
         name: 'flowmeter',
     },
-    // {
-    //     parent: '/' + cse.name + '/' + ae.name,
-    //     name: 'co2',
-    // },
+    {
+        parent: '/' + cse.name + '/' + ae.name,
+        name: 'command',
+    },
     // {
     //     parent: '/' + cse.name + '/' + ae.name,
     //     name: 'temp',
@@ -73,13 +73,14 @@ cnt_arr = [
 // build sub
 sub_arr = [
     {
-        // parent: cnt_arr[3].parent + '/'  + cnt_arr[3].name,
         parent: cnt_arr[0].parent + '/'  + cnt_arr[0].name,
         name: 'sub1',
-        // nu: 'mqtt://' + cse.host + ':' + cse.mqttport + '/' + ae.id + '?ct=json', // 'http:/' + ip.address() + ':' + ae.port + '/noti?ct=json',
-        // nu: 'mqtt://' + cse.host + ':' + cse.mqttport + '/KETI_Flowmeter' + '?ct=json', // 'http:/' + ip.address() + ':' + ae.port + '/noti?ct=json',
-        nu: 'mqtt://' + cse.host + ':' + cse.mqttport + '/'+ae.name + '?ct=json', // 'http:/' + ip.address() + ':' + ae.port + '/noti?ct=json',
-
+        nu: 'mqtt://' + cse.host + ':' + cse.mqttport + '/' + cnt_arr[0].parent + '/' + cnt_arr[0].name, // 'http:/' + ip.address() + ':' + ae.port + '/noti?ct=json',
+    },
+    {
+        parent: cnt_arr[1].parent + '/'  + cnt_arr[1].name,
+        name: 'sub1',
+        nu: 'mqtt://' + cse.host + ':' + cse.mqttport + '/' + cnt_arr[1].parent + '/' + cnt_arr[1].name, // 'http:/' + ip.address() + ':' + ae.port + '/noti?ct=json',
     },
 ];
 

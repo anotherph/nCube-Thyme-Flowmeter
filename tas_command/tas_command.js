@@ -4,6 +4,12 @@
  * Made compatible with Thyme v1.7.2
  */
 
+/*
+24/02/07 test 결과
+유량계 - 6, 펌프 - 10 이든 유량계 - 10, 펌프 - 6 이든 결과가 동일했음
+command 에 off 로 넣어야 켜짐(tas_command_test_on.js), command 에 on 로 넣어야 켜짐(tas_command_test_off.js) 
+유량계 6 번만 테스트할경우, off 를 하면 유량계/펌프 둘다 켜지고 (tas_command_test_on_6.js) on 을 해도 둘다 꺼지지 않음 (tas_command_test_off_6.js)
+*/
 
 const mqtt = require('mqtt');
 const {nanoid} = require('nanoid');
@@ -13,11 +19,11 @@ let c_flowmeter = new Gpio(6, 'out'); // 유량계
 let c_pump = new Gpio(10, 'out'); // 펌프
 
 function control_equip(command){
-    if (command = "on"){
+    if (command == "on"){
         c_flowmeter.writeSync(1);
         c_pump.writeSync(1);
     }
-    else if(command = "off"){
+    else if(command == "off"){
         c_flowmeter.writeSync(0);
         c_pump.writeSync(0);
     }
@@ -31,45 +37,6 @@ function all_Gpio_off(){
     c_flowmeter.writeSync(0);
     c_pump.writeSync(0);
 }
-
-/* USER CODE */
-// for led set
-
-/*
-let LED_G = new Gpio(17, 'out');
-let LED_B = new Gpio(18, 'out');
-let LED_R = new Gpio(27, 'out');
-
-function led_control(light_type){
-    if(light_type === 1){
-        LED_R.writeSync(1);
-        LED_G.writeSync(0);
-        LED_B.writeSync(0);
-    }
-    else if(light_type === 2){
-        LED_R.writeSync(0);
-        LED_G.writeSync(1);
-        LED_B.writeSync(0);
-    }
-    else if(light_type === 3){
-        LED_R.writeSync(0);
-        LED_G.writeSync(0);
-        LED_B.writeSync(1);
-    }
-    else if(light_type === 4){
-    }
-    else{
-        all_Gpio_off();
-        console.log("not defined type")
-    }
-}
-
-function all_Gpio_off(){
-    LED_R.writeSync(0);
-    LED_G.writeSync(0);
-    LED_B.writeSync(0);
-}
-*/
 
 let tas = {
     client: {
@@ -145,11 +112,7 @@ let createConnection = () => {
 
                 /* USER CODES */
                 if(topic === recvDataTopic.command) {
-                    /*
-                    // LED 제어
-                    console.log("led light type : ", JSON.parse(message.toString()));
-                    led_control(JSON.parse(message.toString()));
-                    */
+                // 유량계 테스트 결과
                    console.log("---> command message: ", JSON.parse(message.toString()));
                    control_equip(JSON.parse(message.toString())); 
                 }

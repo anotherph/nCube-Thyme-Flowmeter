@@ -66,7 +66,8 @@ let sendDataTopic = {
 
 let recvDataTopic = {
     // led: '/led/set',
-    command: '/KETI_Flowmeter/command'
+    // command: '/KETI_Flowmeter/command'
+    command: '//Mobius/KETI_Flowmeter/command'
 };
 /* */
 

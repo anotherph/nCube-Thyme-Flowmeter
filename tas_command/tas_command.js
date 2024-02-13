@@ -20,10 +20,12 @@ let c_pump = new Gpio(10, 'out'); // 펌프
 
 function control_equip(command){
     if (command == "on"){
+        console.log('command is "on"');
         c_flowmeter.writeSync(1);
         c_pump.writeSync(1);
     }
     else if(command == "off"){
+        console.log('command is "off"');
         c_flowmeter.writeSync(0);
         c_pump.writeSync(0);
     }

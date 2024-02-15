@@ -127,13 +127,13 @@ function setup_resources(_status) {
                 ae_response_action(status, res_body, function (status, aeid) {
                     console.log('x-m2m-rsc : ' + status + ' - ' + aeid + ' <----');
                     request_count = 0;
-
+                    console.log('-------seq---------1');
                     setTimeout(setup_resources, 100, 'rtvae');
                 });
             }
             else if (status == 5106 || status == 4105) {
                 console.log('x-m2m-rsc : ' + status + ' <----');
-
+                console.log('-------seq---------1');
                 setTimeout(setup_resources, 100, 'rtvae');
             }
             else {
@@ -153,6 +153,7 @@ function setup_resources(_status) {
                 }
                 else {
                     request_count = 0;
+                    console.log('-------seq---------2');
                     setTimeout(setup_resources, 100, 'crtct');
                 }
             }
@@ -172,6 +173,7 @@ function setup_resources(_status) {
                 request_count = ++count;
                 if (conf.cnt.length <= count) {
                     request_count = 0;
+                    console.log('-------seq---------3');
                     setTimeout(setup_resources, 100, 'delsub');
                 }
             }
@@ -187,6 +189,7 @@ function setup_resources(_status) {
                 request_count = ++count;
                 if (conf.sub.length <= count) {
                     request_count = 0;
+                    console.log('-------seq---------4');
                     setTimeout(setup_resources, 100, 'crtsub');
                 }
             }
@@ -202,7 +205,7 @@ function setup_resources(_status) {
                 request_count = ++count;
                 if (conf.sub.length <= count) {
                     thyme_tas.ready_for_tas();
-
+                    console.log('-------seq---------5');
                     setTimeout(setup_resources, 100, 'crtci');
                 }
             }

@@ -21,15 +21,15 @@ c_flowmeter.writeSync(1); // set 1 to initialize
 c_pump.writeSync(1); // set 1 to initialize
 
 function control_equip(command){
-    if (command == "on"){ // 실제 작동은 off
+    if (command == "on"){ 
         console.log('command is "on"');
-        c_flowmeter.writeSync(1);
-        // c_pump.writeSync(1);
-    }
-    else if(command == "off"){ // 실제 작동은 on 
-        console.log('command is "off"');
         c_flowmeter.writeSync(0);
-        // c_pump.writeSync(0);
+        c_pump.writeSync(0);
+    }
+    else if(command == "off"){ 
+        console.log('command is "off"');
+        c_flowmeter.writeSync(1);
+        c_pump.writeSync(1);
     }
     else{
         all_Gpio_off();

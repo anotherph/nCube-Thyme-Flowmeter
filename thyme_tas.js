@@ -32,7 +32,7 @@ let getDataTopic = {
     // co2: '/thyme/co2',
     // tvoc: '/thyme/tvoc',
     // temp: '/thyme/temp',
-    flowmeter: '/thyme/flowmeter', // 이 토픽으로 어떻게 sub1 인지 아는거지? 
+    flowmeter: '/thyme/flowmeter', 
 };
 
 let setDataTopic = {
@@ -91,6 +91,7 @@ let createConnection = () => {
                 /* USER CODES */
                 if (topic === getDataTopic.flowmeter) {
                     parent = conf.cnt[0].parent + '/' + conf.cnt[0].name;
+                    parentCom = conf.cnt[1].parent + '/' + conf.cnt[1].name;
                     content = message.toString();
                 }
 
@@ -119,6 +120,9 @@ let createConnection = () => {
                         console.log('x-m2m-rsc : ' + status + ' <----');
                         // doPublish(mobiusTopic.mobius,content) // make alarm to let us know the new cnt is posted
                         // console.log('publish topic of'+mobiusTopic.mobius)
+                    });
+                    onem2m_client.create_cin(parentCom, 1, "on", this, (status, res_body, to, socket) => {
+                        console.log('command: on'); // create cin with "on" in /Mobius/KETI_Flowmeter/command when the serial data is posted in /Mobius/KETI_Flowmeter/flowmeter
                     });
                 }
             });
